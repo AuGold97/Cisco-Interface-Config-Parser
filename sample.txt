@@ -1,0 +1,17 @@
+interface GigabitEthernet1/0/4
+ description HR-PC-01
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+
+interface GigabitEthernet1/0/5
+ description Finance-PC-01
+ switchport mode access
+ switchport access vlan 10
+ authentication port-control auto
+ dot1x pae authenticator
+ spanning-tree portfast
+!
