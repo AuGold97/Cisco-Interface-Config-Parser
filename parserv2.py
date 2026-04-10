@@ -33,3 +33,18 @@ def parse_interfaces(config_file):
             elif line.startswith("switchport mode "):
                 intf["mode"] = line.split()[-1]
             
+            elif line.startswith("switchport access vlan "):
+                intf["vlan"] = line.split()[-1]
+
+            elif line == "switchport port-security mac-address sticky":
+                intf["security"] = "mac_sticky"
+
+            elif line == "dot1x pae authenticator":
+                intf["security"] = "dot1x"
+            
+            elif line == "shutdown":
+                intf["admin_state"] = "shutdown"
+            
+        interfaces.append(intf)
+    
+    return interfaces
