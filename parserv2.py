@@ -54,3 +54,30 @@ def parse_interfaces(config_file):
         interfaces.append(intf)
     
     return interfaces
+
+
+# --- Section 2: Display ---
+
+SECURITY_DISPLAY = {
+    "mac_sticky": "MAC Sticky Enabled",
+    "dot1x": "802.1X enabled",
+    "conflict": "CONFLICT - both MAC Sticky and 802.1X detected",
+    None: "No port security configured",
+}
+
+def display_interface_list(interfaces):
+    """Prints a numbered list of parsed interfaces."""
+    print("\nDiscovered Interfaces")
+    print("---------------------")
+    for idx, intf in enumerate(interfaces, start=1):
+        print(f" {idx}. {intf['name']}")
+
+def display_interface_detail(intf):
+    """Prints the key fields of a single parsed interface."""
+    print(f"\n Interface Port : {intf['name']}")
+    print(f" Description : {intf['description'] or 'N/A'}")
+    print(f" Mode : {intf['mode'] or 'N/A'}")
+    print(f" VLAN : {intf['vlan'] or 'N/A'}")
+    print(f" Security : {SECURITY_DISPLAY.get(intf['security'], intf['security'])}")
+    print(f" Admin State : {intf['admin_state']}")
+    
