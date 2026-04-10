@@ -23,7 +23,7 @@ def parse_interfaces(config_file):
             "admin_state": "up",
         }
 
-        # Walk through every child line once and etract what we need 
+        # Walk through every child line once and extract what we need 
         for child in intf_obj.children:
             line = child.text.strip()
 
@@ -37,10 +37,16 @@ def parse_interfaces(config_file):
                 intf["vlan"] = line.split()[-1]
 
             elif line == "switchport port-security mac-address sticky":
-                intf["security"] = "mac_sticky"
+                if intf["security"] == "dot1x":
+                    intf["security"] = "conflict"
+                else:
+                    intf["security"] = "mac_sticky"
 
             elif line == "dot1x pae authenticator":
-                intf["security"] = "dot1x"
+                if intf["security"] == "mac_sticky":
+                    intf["security"] = "conflict"
+                else:
+                    intf["security"] = "dot1x"
             
             elif line == "shutdown":
                 intf["admin_state"] = "shutdown"
