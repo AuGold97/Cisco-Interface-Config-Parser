@@ -58,6 +58,7 @@ def parse_interfaces(config_file):
 
 # --- Section 2: Display ---
 
+
 SECURITY_DISPLAY = {
     "mac_sticky": "MAC Sticky Enabled",
     "dot1x": "802.1X enabled",
@@ -80,4 +81,67 @@ def display_interface_detail(intf):
     print(f" VLAN : {intf['vlan'] or 'N/A'}")
     print(f" Security : {SECURITY_DISPLAY.get(intf['security'], intf['security'])}")
     print(f" Admin State : {intf['admin_state']}")
+
+
+# --- Section 3: Command Generation ---
+
+
+def build_commands(interface_name, action_lines):
+    """
+    Wraps action-specific lines in the standard conf t / shutdown / end / wr skeleton.
+    Returns the full command sequence as a string.
+    """
+
+    commands = [
+        "conf t",
+        f"interface {interface_name}",
+        " shutdown",
+    ]
+    for line in action_lines:
+        commands.append(f" {line}")
+    commands.extend([
+        " no shutdown",
+        "end",
+        "wr",
+    ])
+    return "\n".join(commands)
+
+def generate_vlan_change(intf, new_vlan):
+    """Changes the VLAN on an access port."""
+    return build_commands(intf["name"], [
+        f"switchport access vlan {new_vlan}",
+    ])
+
+def generate_mac_sticky_reset(intf):
+    """Removes and re-applies MAC sticky port security."""
+    return build_commands(intf["nanme"],[
+        "no switchport port-security mac-address sticky",
+        "no switchport port-security",
+        "switchport port-security",
+        "switchport port-security mac-address sticky",
+    ])
+
+def generate_mac_sticky_to_dot1x(intf):
+
+
+    
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) < 2:
+        print("Usage: python parser.py <config_file>")
+        sys.exit(1)
+
+    interfaces = parse_interfaces(sys.argv[1])
+
+    if not interfaces:
+        print("No interfaces found.")
+        sys.exit(1)
+
+    display_interface_list(interfaces)
+
+    choice = int(input("\nSelect interface number: ")) - 1
+    display_interface_detail(interfaces[choice])
+
     
