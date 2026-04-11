@@ -122,8 +122,45 @@ def generate_mac_sticky_reset(intf):
     ])
 
 def generate_mac_sticky_to_dot1x(intf):
+    """Converts from MAC sticky to 802.1X."""
+    return build_commands(intf["name"], [
+        "no switchport port-security mac-address sticky",
+        "no switchport port-security",
+        "authentication port-control auto",
+        "dot1x pae authenticator",
+    ])
 
+def generate_dot1x_to_mac_sticky(intf):
+    """Converts from 802.1X to MAC sticky."""
+    return build_commands(intf["name"], [
+        "no authentication port-control auto",
+        "no dot1x pae authenticator",
+        "switchport port-security",
+        "switchport port-security mac-address sticky",
+    ])
 
+def generate_vlan_change_with_conversion(intf, new_vlan, target_security):
+    """Changes the VLAN and converts the port security in one pass."""
+    action_lines = [f"switchport access vlan {new_vlan}"]
+
+    if intf["security"] == "mac_sticky" and target_security == "dot1x":
+        action_lines.extend([
+            "no switchport port-security mac-address sticky",
+            "no switchport port-security",
+            "authentication port-control auto",
+            "dot1x pae authenticator",
+        ])
+    elif intf["security"] == "dot1x" and target_security == "nac_sticky":
+        action_lines.extend([
+            "no authentication port-control auto",
+            "no dot1x pae authenticator",
+            "switchport port-security",
+            "switchport port-security mac-address sticky",
+        ])
+    
+    return build_commands(intf["name"], action_lines)
+
+def generate_rollback(intf):
     
 
 if __name__ == "__main__":
