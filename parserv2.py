@@ -114,7 +114,7 @@ def generate_vlan_change(intf, new_vlan):
 
 def generate_mac_sticky_reset(intf):
     """Removes and re-applies MAC sticky port security."""
-    return build_commands(intf["nanme"],[
+    return build_commands(intf["name"],[
         "no switchport port-security mac-address sticky",
         "no switchport port-security",
         "switchport port-security",
@@ -150,7 +150,7 @@ def generate_vlan_change_with_conversion(intf, new_vlan, target_security):
             "authentication port-control auto",
             "dot1x pae authenticator",
         ])
-    elif intf["security"] == "dot1x" and target_security == "nac_sticky":
+    elif intf["security"] == "dot1x" and target_security == "mac_sticky":
         action_lines.extend([
             "no authentication port-control auto",
             "no dot1x pae authenticator",
@@ -162,7 +162,7 @@ def generate_vlan_change_with_conversion(intf, new_vlan, target_security):
 
 def generate_rollback(intf):
     """Rebuilds the original configuration from parsed data."""
-    action_lines[]
+    action_lines = []
 
     if intf["mode"]:
         action_lines.append(f"switchport mode {intf['mode']}")
