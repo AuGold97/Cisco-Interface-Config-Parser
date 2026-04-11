@@ -161,7 +161,32 @@ def generate_vlan_change_with_conversion(intf, new_vlan, target_security):
     return build_commands(intf["name"], action_lines)
 
 def generate_rollback(intf):
+    """Rebuilds the original configuration from parsed data."""
+    action_lines[]
+
+    if intf["mode"]:
+        action_lines.append(f"switchport mode {intf['mode']}")
+
+    if intf["vlan"]:
+        action_lines.append(f"switchport access vlan {intf['vlan']}")
+
+    if intf["security"] == "mac_sticky":
+        action_lines.extend([
+            "switchport port-security",
+            "switchport port-security mac-address sticky",
+        ])
+    elif intf["security"] == "dot1x":
+        action_lines.extend([
+            "authentication port-control auto",
+            "dot1x pae authenticator",
+        ])
     
+    return build_commands(intf["name"], action_lines)
+
+
+
+
+
 
 if __name__ == "__main__":
     import sys
