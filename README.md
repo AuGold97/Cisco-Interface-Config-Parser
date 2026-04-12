@@ -24,7 +24,7 @@ brew install ciscoconfparse
 ## Usage
 
 python3 parserv3.py <config file>
-for example: python3 parserv3.py sample.txt
+For example: python3 parserv3.py sample.txt
 
 The program will:
 
