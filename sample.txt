@@ -1,4 +1,10 @@
-interface GigabitEthernet1/0/4
+!
+! Sample Cisco Switch Running Configuration
+! Generated for parser testing
+!
+hostname SW-FLOOR3
+!
+interface GigabitEthernet1/0/1
  description HR-PC-01
  switchport mode access
  switchport access vlan 20
@@ -6,12 +12,145 @@ interface GigabitEthernet1/0/4
  switchport port-security mac-address sticky
  spanning-tree portfast
 !
-
+interface GigabitEthernet1/0/2
+ description HR-PC-02
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/3
+ description HR-PRINTER-01
+ switchport mode access
+ switchport access vlan 25
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/4
+ description FINANCE-PC-01
+ switchport mode access
+ switchport access vlan 30
+ dot1x pae authenticator
+ authentication port-control auto
+ spanning-tree portfast
+!
 interface GigabitEthernet1/0/5
- description Finance-PC-01
+ description FINANCE-PC-02
+ switchport mode access
+ switchport access vlan 30
+ dot1x pae authenticator
+ authentication port-control auto
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/6
+ description TRAINING-PC-01
+ switchport mode access
+ switchport access vlan 40
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/7
+ description TRAINING-PC-02
+ switchport mode access
+ switchport access vlan 40
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/8
+ description TRAINING-PC-03
+ switchport mode access
+ switchport access vlan 40
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/9
+ description LOBBY-KIOSK-01
+ switchport mode access
+ switchport access vlan 50
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/10
+ description LOBBY-PRINTER
+ switchport mode access
+ switchport access vlan 50
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/11
+ description CONFLICT-TEST-PORT
+ switchport mode access
+ switchport access vlan 60
+ switchport port-security
+ switchport port-security mac-address sticky
+ dot1x pae authenticator
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/12
+ description VACANT-PORT
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+!
+interface GigabitEthernet1/0/13
+ description SERVER-ROOM-UPLINK
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/14
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/15
+ description IT-BENCH-01
  switchport mode access
  switchport access vlan 10
- authentication port-control auto
  dot1x pae authenticator
+ authentication port-control auto
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/16
+ description IT-BENCH-02
+ switchport mode access
+ switchport access vlan 10
+ dot1x pae authenticator
+ authentication port-control auto
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/17
+ description BREAK-ROOM-AP
+ switchport mode access
+ switchport access vlan 70
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/18
+ description SECURITY-CAM-01
+ switchport mode access
+ switchport access vlan 80
+ switchport port-security
+ switchport port-security mac-address sticky
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/19
+ description CONF-ROOM-DISPLAY
+ switchport mode access
+ switchport access vlan 90
+ spanning-tree portfast
+ shutdown
+!
+interface GigabitEthernet1/0/20
+ description CONFLICT-TEST-PORT-2
+ switchport mode access
+ switchport access vlan 35
+ dot1x pae authenticator
+ switchport port-security
+ switchport port-security mac-address sticky
  spanning-tree portfast
 !
