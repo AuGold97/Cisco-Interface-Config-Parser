@@ -7,6 +7,7 @@ MAC sticky resets, and security mode conversions.
 """
 
 from ciscoconfparse import CiscoConfParse
+import sys
 
 def parse_interfaces(config_file):
     parse = CiscoConfParse(config_file)
@@ -184,26 +185,117 @@ def generate_rollback(intf):
     return build_commands(intf["name"], action_lines)
 
 
+# --- Section 4: Main Flow ---
 
 
+ACTIONS = {
+    "1": "VLAN change",
+    "2": "MAC sticky reset",
+    "3": "MAC sticky to dot1x",
+    "4": "Dot1x to MAX sticky",
+    "5": "VLAN change with port security conversion",
+    "6": "Generate rollback only",
+}
+
+def display_actions():
+    """Prints the available actions menu."""
+    print("\nAvailable Actions")
+    print("-----------------")
+    for key, label in ACTIONS.items():
+        print(f" {key}. {label}")
+
+def get_interface_selections(interfaces):
+    """
+    Prompts the user to select one or more interfaces by number.
+    Returns a list of selected interface dictionaries.
+    """
+    raw = input("\nSelect interface(s) (e.g. 1 or 1,3,4): ").strip()
+    selected = []
+
+    for part in raw.split(","):
+        idx = int(part.strip()) - 1
+        if 0 <= idx < len(interfaces):
+            selected.append(interfaces[idx])
+        else:
+            print(f" Skipping invalid selection: {part.strip()}")
+    
+    return selected
+
+def handle_action(action, selected):
+    """
+    Runs the chosen actions against every selected interface.
+    Prints generated commands and rollback for each. 
+    """
+    for intf in selected:
+        print(f"\n{'='*50}")
+        print(f" {intf['name']}")
+        print(f"{'='*50}")
+
+        if intf["security"] == "conflict":
+            print(" SKIPPED - security conflict detected. Resolve manually.")
+            continue
+
+        print("\nGenerated Commands")
+        print("------------------")
+
+if action == "1":
+    new_vlan = input(f" Enter new VLAN for {intf['name']}: ").strip()
+    print(generate_vlan_change(intf, new_vlan))
+
+elif action == "2":
+    print(generate_mac_sticky_reset(intf))
+
+elif action == "3":
+    print(generate_mac_sticky_to_dot1x(intf))
+
+elif action == "4":
+    print(generate_dot1x_to_mac_sticky(intf))
+
+elif action == "5":
+    new_vlan = input(f" Enter new VLAN for {intf['name']}: ").strip()
+    target = input("  Enter target security (mac_sticky/dot1x): ").strip()
+    print(generate_vlan_change_with_conversion(intf, new_vlan, target))
+
+elif action == "6":
+    pass # Rollback prints below
+
+else:
+    print(" Invalid action.")
+    continue
+
+print("\nRollback Commands")
+print("-----------------")
+print(generate_rollback(intf))
 
 
-if __name__ == "__main__":
-    import sys
-
+def main():
     if len(sys.argv) < 2:
         print("Usage: python parser.py <config_file>")
         sys.exit(1)
-
+    
     interfaces = parse_interfaces(sys.argv[1])
 
-    if not interfaces:
+    if not interfaces: 
         print("No interfaces found.")
         sys.exit(1)
 
     display_interface_list(interfaces)
+    selected = get_interface_selections(interfaces)
 
-    choice = int(input("\nSelect interface number: ")) - 1
-    display_interface_detail(interfaces[choice])
+    if not selected:
+        print("No valid interfaces selected.")
+        sys.exit(1)
 
+    print(f"\n Selected {len(selected)} interface(s):")
+    for intf in selected:
+        display_interface_detail(intf)
+
+    display_actions()
+    action = input("\nSelect action number: ").strip()
+
+    handle_action(action, selected)
+
+if __name__ == "__main__":
+    main()
+    
     
