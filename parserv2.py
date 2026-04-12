@@ -238,34 +238,34 @@ def handle_action(action, selected):
         print("\nGenerated Commands")
         print("------------------")
 
-    if action == "1":
-        new_vlan = input(f" Enter new VLAN for {intf['name']}: ").strip()
-        print(generate_vlan_change(intf, new_vlan))
+        if action == "1":
+            new_vlan = input(f" Enter new VLAN for {intf['name']}: ").strip()
+            print(generate_vlan_change(intf, new_vlan))
 
-    elif action == "2":
-        print(generate_mac_sticky_reset(intf))
+        elif action == "2":
+            print(generate_mac_sticky_reset(intf))
 
-    elif action == "3":
-        print(generate_mac_sticky_to_dot1x(intf))
+        elif action == "3":
+            print(generate_mac_sticky_to_dot1x(intf))
 
-    elif action == "4":
-        print(generate_dot1x_to_mac_sticky(intf))
+        elif action == "4":
+            print(generate_dot1x_to_mac_sticky(intf))
 
-    elif action == "5":
-        new_vlan = input(f" Enter new VLAN for {intf['name']}: ").strip()
-        target = input("  Enter target security (mac_sticky/dot1x): ").strip()
-        print(generate_vlan_change_with_conversion(intf, new_vlan, target))
+        elif action == "5":
+            new_vlan = input(f" Enter new VLAN for {intf['name']}: ").strip()
+            target = input("  Enter target security (mac_sticky/dot1x): ").strip()
+            print(generate_vlan_change_with_conversion(intf, new_vlan, target))
 
-    elif action == "6":
-        pass # Rollback prints below
+        elif action == "6":
+            pass # Rollback prints below
 
-    else:
-        print(" Invalid action.")
-        continue
+        else:
+            print(" Invalid action.")
+            continue
 
-    print("\nRollback Commands")
-    print("-----------------")
-    print(generate_rollback(intf))
+        print("\nRollback Commands")
+        print("-----------------")
+        print(generate_rollback(intf))
 
 
 def main():
