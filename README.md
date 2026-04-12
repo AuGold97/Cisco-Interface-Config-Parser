@@ -15,7 +15,11 @@ The complexity point of this project is the parsing and validation logic. The pa
 
 ## Installation
 
+Using pip:
 pip install ciscoconfparse
+
+Or using Homebrew (macOS):
+brew install ciscoconfparse
 
 ## Usage
 
