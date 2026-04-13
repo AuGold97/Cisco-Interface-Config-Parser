@@ -24,11 +24,11 @@ pip3 install ciscoconfparse
 
 ## Usage
 
-python parserv3.py <config file>
+python parserv3.py <"config file">
 
 OR
 
-python3 parserv3.py <config file>
+python3 parserv3.py <"config file">
 
 
 For example: python3 parserv3.py sample.txt
