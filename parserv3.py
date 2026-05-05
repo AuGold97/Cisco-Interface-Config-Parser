@@ -66,6 +66,9 @@ def parse_interfaces(config_file):
             elif line.startswith("switchport access vlan "):
                 intf["vlan"] = line.split()[-1]
 
+            # Conflict detection: if both MAC sticky and dot1x are present
+            # on the same interface, flag it so downstream logic can skip
+            # the port rather than generate commands against an ambiguous state
             elif line == "switchport port-security mac-address sticky":
                 if intf["security"] == "dot1x":
                     intf["security"] = "conflict"
@@ -78,6 +81,7 @@ def parse_interfaces(config_file):
                 else:
                     intf["security"] = "dot1x"
             
+            # If shutdown isn't present, the port is up by default
             elif line == "shutdown":
                 intf["admin_state"] = "shutdown"
             
@@ -88,7 +92,8 @@ def parse_interfaces(config_file):
 
 # --- Section 2: Display ---
 
-
+# Maps raw security values from the parser to human-readable labels.
+# None is a valid key — it handles interfaces where no security line was found.
 SECURITY_DISPLAY = {
     "mac_sticky": "MAC Sticky Enabled",
     "dot1x": "802.1X enabled",
@@ -130,6 +135,9 @@ def build_commands(names, action_lines):
     Wraps action-specific lines in the standard conf t / shutdown / end / wr skeleton.
     Accepts a list of names for interface range support.
     """
+    # Every CLI change follows the same pattern: enter config mode,
+    # target the interface(s), shut the port down, make changes,
+    # bring it back up, exit config mode, and save
     commands = [
         "conf t",
         format_interface_line(names),
@@ -143,7 +151,11 @@ def build_commands(names, action_lines):
         "wr",
     ])
     return "\n".join(commands)
-
+    
+# Rollback restores ports to their original parsed configuration.
+# Ports with identical original configs are grouped into interface range
+# blocks to keep the output compact. Note: rollback currently restores
+# the full original config, even if only one attribute was changed.
 def generate_rollback(selected):
     """
     Generates rollback commands for a batch of interfaces.
@@ -256,7 +268,8 @@ def handle_action(action, selected):
     """
     names = [intf["name"] for intf in selected]
 
-    # Filter out conflict ports
+    # Ports with both MAC sticky and dot1x detected are skipped automatically.
+    # These need manual review before any commands can be safely generated.
     conflict_ports = [intf for intf in selected if intf["security"] == "conflict"]
     if conflict_ports:
         print("\n  The following ports have security conflicts and will be skipped:")
@@ -343,6 +356,9 @@ def main():
         print("No interfaces found.")
         sys.exit(1)
 
+    # Batch loop: select ports, pick an action, generate commands and rollback.
+    # Repeat until the user is done. Each batch is self-contained
+    # one set of ports, one action, one command block, one rollback block.
     while True:
         display_interface_list(interfaces)
         selected = get_interface_selections(interfaces)
