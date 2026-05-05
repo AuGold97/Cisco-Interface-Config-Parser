@@ -42,6 +42,30 @@ The program will:
 5. Generate the CLI commands for the chosen action and corresponding rollback commands.
 6. Ask if you want to select more interfaces or exit.
 
+## Glossary
+
+**Running-Config** — The active configuration currently running on a Cisco switch. Viewed with the `show running-config` command.
+
+**Interface** — A physical port on a switch (e.g., GigabitEthernet1/0/1). Each interface has its own configuration block in the running-config.
+
+**VLAN (Virtual Local Area Network)** — A logical network segment. Devices on the same VLAN can communicate with each other. Ports are assigned to VLANs to control which network segment a connected device belongs to.
+
+**Access Mode** — A switchport mode where the port belongs to a single VLAN. Typically used for end devices like PCs and printers.
+
+**Trunk Mode** — A switchport mode that carries traffic for multiple VLANs. Typically used for switch-to-switch or switch-to-router connections.
+
+**MAC Sticky (Port Security)** — A security feature that learns and remembers the MAC address of the device connected to a port. If a different device is plugged in, the port can restrict or shut down access.
+
+**802.1X / dot1x** — A network authentication protocol that requires a device to authenticate (usually through a RADIUS server) before being granted network access on a port.
+
+**Interface Range** — A Cisco CLI feature that allows the same configuration commands to be applied to multiple ports at once (e.g., `interface range GigabitEthernet1/0/1, GigabitEthernet1/0/3, GigabitEthernet1/0/5`).
+
+**Admin State** — Whether a port is administratively enabled (up) or disabled (shutdown). A shutdown port does not pass traffic regardless of its other configuration.
+
+**Rollback** — A set of commands that restores a port to its original configuration. Used to reverse changes if something goes wrong.
+
+**conf t / end / wr** — Standard Cisco CLI sequence. `conf t` enters configuration mode, `end` exits configuration mode, and `wr` saves the configuration to memory.
+
 ## Sample Data
 
 The included `sample.txt` contains 20 interface blocks representing a realistic switch configuration with a mix of access ports, trunk ports, MAC sticky security, 802.1X security, shutdown ports, ports with no security, and two ports with intentional security conflicts for testing.
