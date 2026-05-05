@@ -22,6 +22,8 @@ OR
 
 pip3 install ciscoconfparse 
 
+Note: On macOS/Linux, you may need to use `pip3` instead of `pip`.
+
 ## Usage
 
 python parserv3.py <"config file">
@@ -30,6 +32,7 @@ OR
 
 python3 parserv3.py <"config file">
 
+Note: On macOS/Linux, you may need to use `python3` instead of `python`.
 
 For example: python3 parserv3.py sample.txt
 
