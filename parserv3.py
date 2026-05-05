@@ -9,6 +9,35 @@ MAC sticky resets, and security mode conversions.
 from ciscoconfparse import CiscoConfParse
 import sys
 
+HELP_TEXT = """
+Cisco Interface Config Parser and Command Generator
+
+Usage: python parser.py <config_file>
+
+Description:
+  Parses Cisco switch running-config files to extract interface details
+  and generates CLI commands for common NOC operations.
+
+Arguments:
+  config_file    Path to a Cisco running-config text file
+
+Examples:
+  python parser.py sample.txt
+
+Selection:
+  Single ports:  1,3,5
+  Ranges:        1-10
+  Mixed:         1,3,6-10,15-20
+
+Available Actions:
+  1. VLAN change
+  2. MAC sticky reset
+  3. MAC sticky to dot1x
+  4. Dot1x to MAC sticky
+  5. VLAN change with port security conversion
+  6. Generate rollback only
+"""
+
 def parse_interfaces(config_file):
     parse = CiscoConfParse(config_file)
     interfaces = []
@@ -304,9 +333,9 @@ def handle_action(action, selected):
     print(generate_rollback(selected))
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python parser.py <config_file>")
-        sys.exit(1)
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+        print(HELP_TEXT)
+        sys.exit(0)
 
     interfaces = parse_interfaces(sys.argv[1])
 
