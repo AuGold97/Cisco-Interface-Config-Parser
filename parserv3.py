@@ -190,14 +190,6 @@ def generate_rollback(selected, action):
 
     commands = ["conf t"]
 
-
-        key = (intf["mode"], intf["vlan"], intf["security"], intf["admin_state"])
-        if key not in groups:
-            groups[key] = []
-        groups[key].append(intf["name"])
-
-    commands = ["conf t"]
-
     group_list = list(groups.items())
     for i, (key, names) in enumerate(group_list):
         commands.append(format_interface_line(names))
