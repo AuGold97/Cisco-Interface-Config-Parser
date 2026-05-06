@@ -369,7 +369,7 @@ def handle_action(action, selected):
 
     print("\nRollback Commands")
     print("-----------------")
-    print(generate_rollback(selected))
+    print(generate_rollback(selected, action))
 
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
