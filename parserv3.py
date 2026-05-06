@@ -159,22 +159,34 @@ def build_commands(names, action_lines):
 def generate_rollback(selected, action):
     """
     Generates rollback commands for a batch of interfaces.
-    Only restores the attributes that the action actually changed. 
+    Only restores the attributes that the action actually changed.
+    Includes removal of newly applied configs before restoring originals.
     Groups ports with identical rollback configs into interface range blocks.
     """
     # Define which fields each action touches
     rollback_fields = {
         "1": ["vlan"],
-        "2": ["security"],
         "3": ["security"],
         "4": ["security"],
         "5": ["vlan", "security"],
         "6": ["mode", "vlan", "security", "admin_state"],  # Full restore for rollback-only
     }
 
+    # Commands to remove what the action just applied, before restoring originals
+    removal_lines = {
+        "3": [
+            "no authentication port-control auto",
+            "no dot1x pae authenticator",
+        ],
+        "4": [
+            "no switchport port-security mac-address sticky",
+            "no switchport port-security",
+        ],
+        "5": None,  # Handled dynamically below based on target
+    }
+
     fields = rollback_fields.get(action, [])
 
-    # Build a fingerprint using only the fields this action touched.
     groups = {}
     for intf in selected:
         key_parts = []
@@ -196,6 +208,26 @@ def generate_rollback(selected, action):
         commands.append(" shutdown")
 
         mode, vlan, security, admin_state = key
+
+        # Remove what the action applied before restoring originals
+        if action in removal_lines and removal_lines[action]:
+            for line in removal_lines[action]:
+                commands.append(f" {line}")
+
+        # For action 5, removal depends on what the original security was
+        # If original was mac_sticky, the action applied dot1x — remove dot1x
+        # If original was dot1x, the action applied mac_sticky — remove mac_sticky
+        if action == "5":
+            if security == "mac_sticky":
+                commands.extend([
+                    " no authentication port-control auto",
+                    " no dot1x pae authenticator",
+                ])
+            elif security == "dot1x":
+                commands.extend([
+                    " no switchport port-security mac-address sticky",
+                    " no switchport port-security",
+                ])
 
         if mode:
             commands.append(f" switchport mode {mode}")
