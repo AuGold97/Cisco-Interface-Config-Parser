@@ -359,9 +359,11 @@ def handle_action(action, selected):
         print("  Invalid action.")
         return
 
-    print("\nRollback Commands")
-    print("-----------------")
-    print(generate_rollback(selected, action))
+    # MAC sticky reset returns the port to the same state - no rollback needed.
+    if action != "2":
+        print("\nRollback Commands")
+        print("-----------------")
+        print(generate_rollback(selected, action))
 
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
