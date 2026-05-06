@@ -299,6 +299,30 @@ def handle_action(action, selected):
             print("  No valid ports remaining.")
             return
 
+    if action == "3":
+        already_dot1x = [intf for intf in selected if intf["security"] == "dot1x"]
+        if already_dot1x:
+            print("\n  The following ports already have dot1x and cannot use this action:")
+            for intf in already_dot1x:
+                print(f"    - {intf['name']}")
+            selected = [intf for intf in selected if intf["security"] != "dot1x"]
+            names = [intf["name"] for intf in selected]
+            if not selected:
+                print("  No valid ports remaining.")
+                return
+
+    if action == "4":
+        already_sticky = [intf for intf in selected if intf["security"] == "mac_sticky"]
+        if already_sticky:
+            print("\n  The following ports already have MAC sticky and cannot use this action:")
+            for intf in already_sticky:
+                print(f"    - {intf['name']}")
+            selected = [intf for intf in selected if intf["security"] != "mac_sticky"]
+            names = [intf["name"] for intf in selected]
+            if not selected:
+                print("  No valid ports remaining.")
+                return
+
     print("\nGenerated Commands")
     print("------------------")
 
