@@ -156,15 +156,41 @@ def build_commands(names, action_lines):
 # Ports with identical original configs are grouped into interface range
 # blocks to keep the output compact. Note: rollback currently restores
 # the full original config, even if only one attribute was changed.
-def generate_rollback(selected):
+def generate_rollback(selected, action):
     """
     Generates rollback commands for a batch of interfaces.
-    Groups ports with identical original configs into interface range blocks.
-    Ports with unique configs get individual blocks.
-    All wrapped in a single conf t / end / wr.
+    Only restores the attributes that the action actually changed. 
+    Groups ports with identical rollback configs into interface range blocks.
     """
+    # Define which fields each action touches
+    rollback_fields = {
+        "1": ["vlan"],
+        "2": ["security"],
+        "3": ["security"],
+        "4": ["security"],
+        "5": ["vlan", "security"],
+        "6": ["mode", "vlan", "security", "admin_state"],  # Full restore for rollback-only
+    }
+
+    fields = rollback_fields.get(action, [])
+
+    # Build a fingerprint using only the fields this action touched.
     groups = {}
     for intf in selected:
+        key_parts = []
+        for field in ["mode", "vlan", "security", "admin_state"]:
+            if field in fields:
+                key_parts.append(intf[field])
+            else:
+                key_parts.append(None)
+        key = tuple(key_parts)
+        if key not in groups:
+            groups[key] = []
+        groups[key].append(intf["name"])
+
+    commands = ["conf t"]
+
+
         key = (intf["mode"], intf["vlan"], intf["security"], intf["admin_state"])
         if key not in groups:
             groups[key] = []
