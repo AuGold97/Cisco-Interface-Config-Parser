@@ -354,6 +354,18 @@ def handle_action(action, selected):
             if not selected:
                 print("  No valid ports remaining.")
                 return
+            
+    if action == "5":
+        no_sec_ports = [intf for intf in selected if intf["security"] is None]
+        if no_sec_ports:
+            print("\n  The following ports have no security and will be skipped (use VLAN change instead):")
+            for intf in no_sec_ports:
+                print(f"    - {intf['name']}")
+            selected = [intf for intf in selected if intf["security"] is not None]
+            names = [intf["name"] for intf in selected]
+            if not selected:
+                print("  No valid ports remaining.")
+                return
 
     print("\nGenerated Commands")
     print("------------------")
@@ -398,24 +410,32 @@ def handle_action(action, selected):
             if new_vlan.isdigit():
                 break
             print("  Invalid input. Please enter a number.")
-        target = input("  Enter target security (mac_sticky/dot1x): ").strip()
 
-        action_lines = [f"switchport access vlan {new_vlan}"]
-        if target == "dot1x":
-            action_lines.extend([
+        # Group ports by current security and auto-flip
+        sticky_ports = [intf for intf in selected if intf["security"] == "mac_sticky"]
+        dot1x_ports = [intf for intf in selected if intf["security"] == "dot1x"]
+
+        if sticky_ports:
+            sticky_names = [intf["name"] for intf in sticky_ports]
+            print(f"\n  MAC sticky ports converting to dot1x:")
+            print(build_commands(sticky_names, [
+                f"switchport access vlan {new_vlan}",
                 "no switchport port-security mac-address sticky",
                 "no switchport port-security",
                 "authentication port-control auto",
                 "dot1x pae authenticator",
-            ])
-        elif target == "mac_sticky":
-            action_lines.extend([
+            ]))
+
+        if dot1x_ports:
+            dot1x_names = [intf["name"] for intf in dot1x_ports]
+            print(f"\n  dot1x ports converting to MAC sticky:")
+            print(build_commands(dot1x_names, [
+                f"switchport access vlan {new_vlan}",
                 "no authentication port-control auto",
                 "no dot1x pae authenticator",
                 "switchport port-security",
                 "switchport port-security mac-address sticky",
-            ])
-        print(build_commands(names, action_lines))
+            ]))
 
     elif action == "6":
         pass  # Rollback prints below
