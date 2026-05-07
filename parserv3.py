@@ -12,7 +12,7 @@ import sys
 HELP_TEXT = """
 Cisco Interface Config Parser and Command Generator
 
-Usage: python parser.py <config_file>
+Usage: python parserv3.py <config_file> OR python3 parserv3.py <config_file>
 
 Description:
   Parses Cisco switch running-config files to extract interface details
@@ -22,7 +22,8 @@ Arguments:
   config_file    Path to a Cisco running-config text file
 
 Examples:
-  python parser.py sample.txt
+  python parserv3.py sample.txt
+  python3 parserv3.py sample.txt
 
 Selection:
   Single ports:  1,3,5
