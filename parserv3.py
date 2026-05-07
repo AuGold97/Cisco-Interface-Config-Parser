@@ -359,7 +359,11 @@ def handle_action(action, selected):
     print("------------------")
 
     if action == "1":
-        new_vlan = input("  Enter new VLAN: ").strip()
+        while True:
+            new_vlan = input("  Enter new VLAN: ").strip()
+            if new_vlan.isdigit():
+                break
+            print(" Invalid input. Please enter a number.")
         print(build_commands(names, [
             f"switchport access vlan {new_vlan}",
         ]))
@@ -389,8 +393,13 @@ def handle_action(action, selected):
         ]))
 
     elif action == "5":
-        new_vlan = input("  Enter new VLAN: ").strip()
+        while True:
+            new_vlan = input("  Enter new VLAN: ").strip()
+            if new_vlan.isdigit():
+                break
+            print(" Invalid input. Please enter a number.")
         target = input("  Enter target security (mac_sticky/dot1x): ").strip()
+        
         action_lines = [f"switchport access vlan {new_vlan}"]
         if target == "dot1x":
             action_lines.extend([
