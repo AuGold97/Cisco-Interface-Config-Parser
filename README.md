@@ -71,4 +71,4 @@ The program will:
 
 ## Sample Data
 
-The included `sample.txt` contains 20 interface blocks representing a realistic switch configuration with a mix of access ports, trunk ports, MAC sticky security, 802.1X security, shutdown ports, ports with no security, and two ports with intentional security conflicts for testing.
+The included `sample.txt` contains 20 interface blocks representing a realistic switch configuration with a mix of access ports, MAC sticky security, 802.1X security, shutdown ports, ports with no security, and two ports with intentional security conflicts for testing.
