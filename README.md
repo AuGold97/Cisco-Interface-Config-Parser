@@ -16,23 +16,25 @@ The complexity point of this project is the parsing and validation logic. The pa
 ## Installation
 
 Using pip:
+```
 pip install ciscoconfparse 
-
+```
 OR
 
 Using pip3:
+```
 pip3 install ciscoconfparse 
-
+```
 Note: On macOS/Linux, you may need to use `pip3` instead of `pip`.
 
 ## Usage
-
-python parserv3.py <"config file">
-
+```
+python parserv3.py <config file>
+```
 OR
-
-python3 parserv3.py <"config file">
-
+```
+python3 parserv3.py <config file>
+```
 Note: On macOS/Linux, you may need to use `python3` instead of `python`.
 
 For example: python3 parserv3.py sample.txt << this is what I use to execute the program.
