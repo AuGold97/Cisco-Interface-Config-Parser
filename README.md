@@ -48,6 +48,25 @@ The program will:
 5. Generate the CLI commands for the chosen action and corresponding rollback commands.
 6. Ask if you want to select more interfaces or exit.
 
+## Help
+
+To view the help menu with usage instructions, selection syntax, and available actions:
+```
+python parserv3.py --help
+```
+OR
+```
+python3 parserv3.py --help
+```
+The `-h` flag also works:
+```
+python parserv3.py -h
+```
+Or simply run without arguments:
+```
+python3 parserv3.py
+```
+
 ## Glossary
 
 **Running-Config** — The active configuration currently running on a Cisco switch. Viewed with the `show running-config` command.
