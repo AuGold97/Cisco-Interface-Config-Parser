@@ -331,19 +331,7 @@ def handle_action(action, selected):
             print("  No valid ports remaining.")
             return
         
-    if action == "2":
-        not_sticky = [intf for intf in selected if intf["security"] != "mac_sticky"]
-        if not_sticky:
-            print("\n  The following ports don't have MAC sticky and cannot use this action:")
-            for intf in not_sticky:
-                print(f"    - {intf['name']}")
-            selected = [intf for intf in selected if intf["security"] == "mac_sticky"]
-            names = [intf["name"] for intf in selected]
-            if not selected:
-                print("  No valid ports remaining.")
-                return
-
-    if action == "3":
+    if action in ("2", "3"):
         not_sticky = [intf for intf in selected if intf["security"] != "mac_sticky"]
         if not_sticky:
             print("\n  The following ports don't have MAC sticky and cannot use this action:")
