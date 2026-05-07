@@ -152,10 +152,10 @@ def build_commands(names, action_lines):
     ])
     return "\n".join(commands)
     
-# Rollback restores ports to their original parsed configuration.
-# Ports with identical original configs are grouped into interface range
-# blocks to keep the output compact. Note: rollback currently restores
-# the full original config, even if only one attribute was changed.
+# Rollback restores only the attributes that the action actually changed.
+# Includes removal of newly applied configs before restoring originals.
+# Ports with identical rollback configs are grouped into interface range
+# blocks to keep the output compact.
 def generate_rollback(selected, action):
     """
     Generates rollback commands for a batch of interfaces.
@@ -399,7 +399,7 @@ def handle_action(action, selected):
                 break
             print(" Invalid input. Please enter a number.")
         target = input("  Enter target security (mac_sticky/dot1x): ").strip()
-        
+
         action_lines = [f"switchport access vlan {new_vlan}"]
         if target == "dot1x":
             action_lines.extend([
