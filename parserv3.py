@@ -355,7 +355,7 @@ def handle_action(action, selected):
                 print("  No valid ports remaining.")
                 return
 
-   if action == "4":
+    if action == "4":
         not_dot1x = [intf for intf in selected if intf["security"] != "dot1x"]
         if not_dot1x:
             print("\n  The following ports don't have dot1x and cannot use this action:")
